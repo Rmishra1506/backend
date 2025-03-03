@@ -66,25 +66,11 @@ router.get("/logout",async (req,res)=>{
 //REFETCH USER
 router.get("/refetch", (req, res) => {
     const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(200).json({
-            isAuthenticated: false,
-            user: null, // No user information
-        });
-    }
-
     jwt.verify(token, process.env.SECRET, {}, async (err, data) => {
         if (err) {
-            console.error("JWT Error:", err);
-            return res.status(401).json({ isAuthenticated: false, error: "Invalid or expired token" });
+            return res.status(404).json(err);
         }
-
-        // Ensure the response includes user data
-        res.status(200).json({
-            isAuthenticated: true,
-            user: data, // Ensure the token contains necessary user details
-        });
+        res.status(200).json(data);
     });
 });
 
